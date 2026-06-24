@@ -1,12 +1,776 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>func4hm3t.github.io</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merge Game – Birleştir, Yüksel, Kazan!</title>
+  <meta name="description" content="Merge Game – Eşleştir, birleştir ve en yüksek skoru yap! 4 farklı tema, küresel liderlik tablosu ve tonlarca başarım seni bekliyor." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #08030f;
+      --bg2:      #0f0820;
+      --gold:     #FFD46A;
+      --gold2:    #FFA630;
+      --white:    #ffffff;
+      --muted:    rgba(255,255,255,.55);
+      --card-bg:  rgba(255,255,255,.05);
+      --card-bd:  rgba(255,255,255,.10);
+      --radius:   20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Background Stars ─────────────────────────────────────────────────── */
+    .stars {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(138,43,226,.18) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(255,166,48,.08) 0%, transparent 60%);
+    }
+    .stars::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(1.5px 1.5px at 10% 20%, rgba(255,255,255,.45), transparent),
+        radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,.35), transparent),
+        radial-gradient(1.5px 1.5px at 55% 15%, rgba(255,255,255,.50), transparent),
+        radial-gradient(1px 1px at 70% 75%, rgba(255,255,255,.30), transparent),
+        radial-gradient(2px 2px at 88% 30%, rgba(255,255,255,.45), transparent),
+        radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,.25), transparent),
+        radial-gradient(1.5px 1.5px at 40% 42%, rgba(255,255,255,.40), transparent),
+        radial-gradient(1px 1px at 65% 55%, rgba(255,255,255,.30), transparent),
+        radial-gradient(2px 2px at 5%  50%, rgba(255,255,255,.35), transparent),
+        radial-gradient(1px 1px at 92% 10%, rgba(255,255,255,.40), transparent);
+    }
+
+    /* ── Layout ───────────────────────────────────────────────────────────── */
+    section, nav, footer { position: relative; z-index: 1; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── NAV ──────────────────────────────────────────────────────────────── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 32px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      backdrop-filter: blur(12px);
+      background: rgba(8,3,15,.70);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold2), var(--gold));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .nav-logo span {
+      font-size: 18px; font-weight: 900; color: var(--white);
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 14px; font-weight: 600;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--gold2), var(--gold));
+      color: #1a0a00 !important; border-radius: 999px;
+      padding: 8px 18px; font-weight: 800 !important;
+      font-size: 13px !important; color: var(--white);
+      transition: opacity .2s !important;
+    }
+    .nav-cta:hover { opacity: .85; color: #1a0a00 !important; }
+
+    /* ── HERO ─────────────────────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 100px 24px 80px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,212,106,.12);
+      border: 1px solid rgba(255,212,106,.30);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 12px; font-weight: 800;
+      color: var(--gold);
+      letter-spacing: .5px;
+      margin-bottom: 28px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 900;
+      line-height: 1.0;
+      background: linear-gradient(160deg, #fff 0%, var(--gold) 55%, var(--gold2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 44px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    .hero-buttons {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 14px;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--gold2), var(--gold));
+      color: #1a0a00;
+      padding: 16px 34px;
+      border-radius: 999px;
+      font-size: 16px; font-weight: 900;
+      text-decoration: none;
+      box-shadow: 0 8px 32px rgba(255,166,48,.35);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(255,166,48,.50);
+    }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.18);
+      color: var(--white);
+      padding: 16px 32px;
+      border-radius: 999px;
+      font-size: 16px; font-weight: 700;
+      text-decoration: none;
+      transition: background .2s, border-color .2s;
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.28);
+    }
+
+    /* App Store SVG badge replacement */
+    .appstore-badge {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: #000;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 14px;
+      padding: 12px 24px;
+      text-decoration: none;
+      color: var(--white);
+      transition: border-color .2s, transform .2s;
+    }
+    .appstore-badge:hover {
+      border-color: rgba(255,255,255,.45);
+      transform: translateY(-2px);
+    }
+    .appstore-badge .ab-icon { font-size: 28px; line-height: 1; }
+    .appstore-badge .ab-text { text-align: left; }
+    .appstore-badge .ab-text .ab-sub { font-size: 10px; color: rgba(255,255,255,.6); display: block; font-weight: 500; }
+    .appstore-badge .ab-text .ab-main { font-size: 17px; font-weight: 800; display: block; line-height: 1.2; }
+
+    /* ── MOCKUP ───────────────────────────────────────────────────────────── */
+    .mockup-area {
+      display: flex;
+      justify-content: center;
+      padding: 20px 24px 70px;
+    }
+    .phone-frame {
+      width: 240px; height: 480px;
+      border-radius: 44px;
+      border: 2px solid rgba(255,255,255,.15);
+      background: linear-gradient(180deg, #1a0f2e 0%, #0a0520 100%);
+      box-shadow:
+        0 0 80px rgba(255,212,106,.18),
+        0 40px 80px rgba(0,0,0,.6),
+        inset 0 1px 0 rgba(255,255,255,.18);
+      overflow: hidden;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center;
+      gap: 12px;
+      position: relative;
+    }
+    .phone-screen-emoji {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
+      padding: 24px;
+    }
+    .phone-item {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      animation: floatItem 3s ease-in-out infinite;
+    }
+    .phone-item:nth-child(2) { animation-delay: .3s; }
+    .phone-item:nth-child(3) { animation-delay: .6s; }
+    .phone-item:nth-child(4) { animation-delay: .9s; }
+    .phone-item:nth-child(5) { animation-delay: 1.2s; }
+    .phone-item:nth-child(6) { animation-delay: 1.5s; }
+    @keyframes floatItem {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .phone-score {
+      position: absolute; top: 28px;
+      font-size: 22px; font-weight: 900;
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(255,212,106,.5);
+    }
+    .phone-plus {
+      position: absolute; font-size: 13px; font-weight: 900;
+      color: var(--gold); animation: popUp 2s ease-in-out infinite;
+    }
+    @keyframes popUp {
+      0%,100% { opacity: 0; transform: translateY(0); }
+      20% { opacity: 1; }
+      60% { opacity: 0; transform: translateY(-30px); }
+    }
+
+    /* ── SECTION TITLE ────────────────────────────────────────────────────── */
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .section-title h2 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 10px;
+    }
+    .section-title p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── MODES ────────────────────────────────────────────────────────────── */
+    #modes { padding: 80px 0; }
+
+    .modes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+    .mode-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-bd);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      transition: transform .25s, border-color .25s, box-shadow .25s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .mode-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at top right, var(--mode-color, var(--gold)) 0%, transparent 65%);
+      opacity: .08;
+      pointer-events: none;
+    }
+    .mode-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--mode-color, var(--gold));
+      box-shadow: 0 16px 48px rgba(0,0,0,.35), 0 0 0 1px var(--mode-color, var(--gold));
+    }
+    .mode-icon {
+      font-size: 40px; margin-bottom: 14px; display: block;
+    }
+    .mode-name {
+      font-size: 20px; font-weight: 900; margin-bottom: 6px;
+      color: var(--mode-color, var(--gold));
+    }
+    .mode-desc {
+      font-size: 13px; color: var(--muted); line-height: 1.55;
+      margin-bottom: 16px;
+    }
+    .mode-items {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .mode-item-chip {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 11px; font-weight: 700;
+      color: var(--muted);
+    }
+
+    /* ── FEATURES ─────────────────────────────────────────────────────────── */
+    #features { padding: 80px 0; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-bd);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+      transition: transform .25s, border-color .25s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,212,106,.35);
+    }
+    .feature-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,212,106,.2), rgba(255,166,48,.1));
+      border: 1px solid rgba(255,212,106,.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 16px;
+    }
+    .feature-title {
+      font-size: 16px; font-weight: 800; margin-bottom: 8px;
+    }
+    .feature-desc {
+      font-size: 13px; color: var(--muted); line-height: 1.6;
+    }
+
+    /* ── LEADERBOARD PREVIEW ──────────────────────────────────────────────── */
+    #leaderboard { padding: 80px 0; }
+
+    .lb-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-bd);
+      border-radius: 28px;
+      padding: 32px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .lb-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 24px;
+    }
+    .lb-header-icon { font-size: 24px; }
+    .lb-header-title { font-size: 18px; font-weight: 900; }
+    .lb-entry {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      margin-bottom: 8px;
+      border: 1px solid transparent;
+      transition: background .2s;
+    }
+    .lb-entry:hover { background: rgba(255,255,255,.04); }
+    .lb-entry.gold { border-color: rgba(255,212,106,.30); background: rgba(255,212,106,.07); }
+    .lb-entry.silver { border-color: rgba(215,215,224,.22); background: rgba(215,215,224,.05); }
+    .lb-entry.bronze { border-color: rgba(205,142,90,.22); background: rgba(205,142,90,.05); }
+    .lb-rank { width: 28px; text-align: center; font-size: 18px; }
+    .lb-avatar {
+      width: 36px; height: 36px; border-radius: 999px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 900;
+      color: #fff;
+    }
+    .lb-name { flex: 1; font-size: 14px; font-weight: 800; }
+    .lb-score { font-size: 16px; font-weight: 900; }
+    .lb-score.gold-text { color: var(--gold); }
+    .lb-score.silver-text { color: #D7D7E0; }
+    .lb-score.bronze-text { color: #CD8E5A; }
+
+    /* ── STATS ROW ────────────────────────────────────────────────────────── */
+    #stats { padding: 60px 0; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 18px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-bd);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 40px; font-weight: 900;
+      background: linear-gradient(135deg, #fff, var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      display: block; margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 13px; font-weight: 700; color: var(--muted);
+    }
+
+    /* ── DOWNLOAD CTA ─────────────────────────────────────────────────────── */
+    #download {
+      padding: 100px 24px;
+      text-align: center;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, rgba(255,166,48,.12), rgba(255,212,106,.06));
+      border: 1px solid rgba(255,212,106,.22);
+      border-radius: 32px;
+      padding: 64px 40px;
+      max-width: 640px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,212,106,.14), transparent 70%);
+      pointer-events: none;
+    }
+    .cta-box h2 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+    .cta-box p {
+      color: var(--muted); font-size: 16px; margin-bottom: 36px; line-height: 1.6;
+    }
+
+    /* ── FOOTER ───────────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 40px 32px 32px;
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between;
+      gap: 18px;
+    }
+    .footer-left { display: flex; align-items: center; gap: 10px; }
+    .footer-logo { font-size: 22px; }
+    .footer-brand { font-size: 15px; font-weight: 800; }
+    .footer-copy { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-links a {
+      text-decoration: none; color: var(--muted); font-size: 13px; font-weight: 600;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    /* ── DIVIDER ──────────────────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.1), transparent);
+      margin: 0 24px;
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 70px 20px 50px; }
+      .lb-card { padding: 22px 18px; }
+      footer { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
+    }
+  </style>
 </head>
 <body>
-    <h2>Memory Monkey Developer Page</h2>
-    <p>app-ads.txt: <a href="app-ads.txt">https://func4hm3t.github.io/app-ads.txt</a></p>
+
+<div class="stars"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">🎮</div>
+    <span>Merge Game</span>
+  </a>
+  <div class="nav-links">
+    <a href="#modes">Modlar</a>
+    <a href="#features">Özellikler</a>
+    <a href="#leaderboard">Liderlik</a>
+    <a href="support.html">Destek</a>
+    <a href="#download" class="nav-cta">İndir →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🏆 &nbsp;Küresel Liderlik Tablosu</div>
+  <h1>Birleştir.<br>Yüksel.<br>Kazan.</h1>
+  <p class="hero-sub">
+    Nesneleri birleştirerek daha büyük şeyler oluştur. 4 farklı tema, XP sistemi,
+    başarımlar ve gerçek zamanlı küresel liderlik tablosu seni bekliyor.
+  </p>
+  <div class="hero-buttons">
+    <a class="appstore-badge" href="https://apps.apple.com/tr/app/drop-merge-birle%C5%9Ftir-b%C3%BCy%C3%BC/id6775585977?l=tr" target="_blank" rel="noopener">
+      <span class="ab-icon"></span>
+      <span class="ab-text">
+        <span class="ab-sub">App Store'dan İndir</span>
+        <span class="ab-main">Drop &amp; Merge</span>
+      </span>
+    </a>
+    <a class="btn-secondary" href="#modes">Modları Keşfet →</a>
+  </div>
+</section>
+
+<!-- PHONE MOCKUP -->
+<div class="mockup-area">
+  <div class="phone-frame">
+    <div class="phone-score">12.480</div>
+    <div class="phone-screen-emoji">
+      <div class="phone-item" style="background:rgba(255,179,186,.15);">🍬</div>
+      <div class="phone-item" style="background:rgba(255,223,186,.15);">🍪</div>
+      <div class="phone-item" style="background:rgba(255,111,145,.15);">🍩</div>
+      <div class="phone-item" style="background:rgba(255,150,113,.15);">🧁</div>
+      <div class="phone-item" style="background:rgba(255,199,95,.15);">🎂</div>
+      <div class="phone-item" style="background:rgba(132,94,194,.15);">🥤</div>
+    </div>
+    <div class="phone-plus" style="top:55%;left:52%;animation-delay:.5s;">+256 ✨</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- MODES -->
+<section id="modes">
+  <div class="container">
+    <div class="section-title">
+      <h2>4 Farklı Evren</h2>
+      <p>Her mod kendi benzersiz nesneleri, renkleri ve atmosferiyle gelir.</p>
+    </div>
+    <div class="modes-grid">
+
+      <div class="mode-card" style="--mode-color:#FF6F91;">
+        <span class="mode-icon">🎂</span>
+        <div class="mode-name">Tatlı Kafe</div>
+        <div class="mode-desc">Şekerden lüks kafe masasına uzanan tatlı bir yolculuk.</div>
+        <div class="mode-items">
+          <span class="mode-item-chip">🍬 Şeker</span>
+          <span class="mode-item-chip">🍪 Kurabiye</span>
+          <span class="mode-item-chip">🍩 Donut</span>
+          <span class="mode-item-chip">🧁 Cupcake</span>
+          <span class="mode-item-chip">🎂 Pasta</span>
+          <span class="mode-item-chip">☕ Kafe</span>
+        </div>
+      </div>
+
+      <div class="mode-card" style="--mode-color:#66BB6A;">
+        <span class="mode-icon">🍳</span>
+        <div class="mode-name">Mutfak</div>
+        <div class="mode-desc">Kaşıktan mutfak tezgahına kadar ev aletleriyle dolu bir yolculuk.</div>
+        <div class="mode-items">
+          <span class="mode-item-chip">🥄 Kaşık</span>
+          <span class="mode-item-chip">🍽 Tabak</span>
+          <span class="mode-item-chip">🍳 Tava</span>
+          <span class="mode-item-chip">🫕 Tencere</span>
+          <span class="mode-item-chip">🔥 Fırın</span>
+          <span class="mode-item-chip">🏠 Tezgah</span>
+        </div>
+      </div>
+
+      <div class="mode-card" style="--mode-color:#4A90D9;">
+        <span class="mode-icon">🎒</span>
+        <div class="mode-name">Okul</div>
+        <div class="mode-desc">Kalemden okul çantasına uzanan eğlenceli bir sınıf macerası.</div>
+        <div class="mode-items">
+          <span class="mode-item-chip">✏️ Kalem</span>
+          <span class="mode-item-chip">✂️ Makas</span>
+          <span class="mode-item-chip">📏 Cetvel</span>
+          <span class="mode-item-chip">📓 Defter</span>
+          <span class="mode-item-chip">🖨️ Hesap M.</span>
+          <span class="mode-item-chip">🎒 Çanta</span>
+        </div>
+      </div>
+
+      <div class="mode-card" style="--mode-color:#7EE787;">
+        <span class="mode-icon">🖥️</span>
+        <div class="mode-name">Bilgisayar</div>
+        <div class="mode-desc">Vidadan oyun kasasına uzanan bir teknoloji evreni.</div>
+        <div class="mode-items">
+          <span class="mode-item-chip">🔩 Vida</span>
+          <span class="mode-item-chip">💾 RAM</span>
+          <span class="mode-item-chip">🖥️ CPU</span>
+          <span class="mode-item-chip">🎮 GPU</span>
+          <span class="mode-item-chip">📟 Anakart</span>
+          <span class="mode-item-chip">🖱️ Kasa</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-title">
+      <h2>Her Oyunda Daha İyisi</h2>
+      <p>Rekabetçi özellikler ve ödüller her seferin daha heyecanlı olmasını sağlar.</p>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-title">Küresel Liderlik Tablosu</div>
+        <div class="feature-desc">Günlük ve haftalık sıralamalar. Her mod için ayrı liderlik tablosu. Altın podiyum.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">⭐</div>
+        <div class="feature-title">XP ve Seviye Sistemi</div>
+        <div class="feature-desc">Her oyunda XP kazan, seviye atla ve küresel XP sıralamasında yerini al.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🎖️</div>
+        <div class="feature-title">Başarımlar</div>
+        <div class="feature-desc">Özel koşulları karşılayarak rozet kazan. Koleksiyonunu büyüt, arkadaşlarınla rekabet et.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🎁</div>
+        <div class="feature-title">Günlük Ödüller</div>
+        <div class="feature-desc">Her gün giriş yap, artan ödüller kazan. 7 günlük ödül zinciri seni bekliyor.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Enerji Sistemi</div>
+        <div class="feature-desc">Canların otomatik dolar. Video izleyerek ekstra can kazan ve daha uzun oyna.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <div class="feature-title">Bulut Senkronizasyonu</div>
+        <div class="feature-desc">İlerlemen bulutta güvende. Cihazlar arası senkronizasyon ile skorum hiç kaybolmaz.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LEADERBOARD PREVIEW -->
+<section id="leaderboard">
+  <div class="container">
+    <div class="section-title">
+      <h2>Rekabet Et, Kazan!</h2>
+      <p>Küresel liderlik tablosunda zirvede kim olacak?</p>
+    </div>
+
+    <div class="lb-card">
+      <div class="lb-header">
+        <span class="lb-header-icon">🏆</span>
+        <span class="lb-header-title">Haftalık Sıralama – Tatlı Kafe</span>
+      </div>
+
+      <div class="lb-entry gold">
+        <div class="lb-rank">🥇</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,#FFD46A,#FFA630);">A</div>
+        <div class="lb-name">AhmetK</div>
+        <div class="lb-score gold-text">48.200</div>
+      </div>
+      <div class="lb-entry silver">
+        <div class="lb-rank">🥈</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,#ccc,#888);">M</div>
+        <div class="lb-name">Merve_42</div>
+        <div class="lb-score silver-text">41.750</div>
+      </div>
+      <div class="lb-entry bronze">
+        <div class="lb-rank">🥉</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,#CD8E5A,#9B6030);">E</div>
+        <div class="lb-name">EmreGamer</div>
+        <div class="lb-score bronze-text">37.100</div>
+      </div>
+      <div class="lb-entry">
+        <div class="lb-rank" style="font-size:13px;color:rgba(255,255,255,.5);">4.</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,#845EC2,#5533AA);">S</div>
+        <div class="lb-name">SenaBest</div>
+        <div class="lb-score" style="color:#fff;">29.450</div>
+      </div>
+      <div class="lb-entry" style="border-color:rgba(255,212,106,.50);background:rgba(255,212,106,.09);">
+        <div class="lb-rank" style="font-size:13px;color:rgba(255,255,255,.5);">5.</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,#FF6F91,#CC2255);">S</div>
+        <div class="lb-name">Sen <span style="font-size:10px;background:rgba(255,212,106,.25);border:1px solid rgba(255,212,106,.5);border-radius:999px;padding:1px 7px;margin-left:6px;font-weight:900;">SEN</span></div>
+        <div class="lb-score" style="color:#fff;">24.880</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-num">4</span>
+        <span class="stat-label">Oyun Modu</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">10+</span>
+        <span class="stat-label">Birleştirme Seviyesi</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">∞</span>
+        <span class="stat-label">Rekor Potansiyeli</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">7</span>
+        <span class="stat-label">Günlük Ödül</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD CTA -->
+<section id="download">
+  <div class="cta-box">
+    <h2>Oynamaya Hazır mısın?</h2>
+    <p>Ücretsiz indir, hemen başla. iOS'ta şimdi mevcut.</p>
+    <a class="appstore-badge" href="https://apps.apple.com/tr/app/drop-merge-birle%C5%9Ftir-b%C3%BCy%C3%BC/id6775585977?l=tr" target="_blank" rel="noopener" style="display:inline-flex;">
+      <span class="ab-icon"></span>
+      <span class="ab-text">
+        <span class="ab-sub">App Store'dan İndir</span>
+        <span class="ab-main">Drop &amp; Merge</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <span class="footer-logo">🎮</span>
+    <div>
+      <div class="footer-brand">Merge Game</div>
+      <div class="footer-copy">© 2026 Merge Game. Tüm hakları saklıdır.</div>
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="support.html">Destek</a>
+    <a href="privacy.html">Gizlilik Politikası</a>
+    <a href="mailto:cenkerenozbek@gmail.com">İletişim</a>
+  </div>
+</footer>
+
 </body>
 </html>

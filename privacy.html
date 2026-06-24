@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gizlilik Politikası – Merge Game</title>
+  <meta name="description" content="Merge Game gizlilik politikası. Kişisel verilerin nasıl toplandığı ve korunduğu hakkında bilgi." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #08030f; --gold: #FFD46A; --gold2: #FFA630;
+      --white: #fff; --muted: rgba(255,255,255,.60);
+      --card-bg: rgba(255,255,255,.04); --card-bd: rgba(255,255,255,.09);
+      --radius: 16px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg); color: var(--white); min-height: 100vh;
+      overflow-x: hidden; line-height: 1.7;
+    }
+    .stars {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse 70% 45% at 50% -5%, rgba(138,43,226,.13) 0%, transparent 70%);
+    }
+    nav, section, footer { position: relative; z-index: 1; }
+    .container { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 32px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      backdrop-filter: blur(12px);
+      background: rgba(8,3,15,.70);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold2), var(--gold));
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .nav-logo span { font-size: 18px; font-weight: 900; color: var(--white); }
+    .nav-back {
+      display: flex; align-items: center; gap: 6px;
+      text-decoration: none; color: var(--muted);
+      font-size: 14px; font-weight: 600; transition: color .2s;
+    }
+    .nav-back:hover { color: var(--white); }
+
+    /* HERO */
+    .page-hero {
+      padding: 64px 24px 44px;
+      text-align: center;
+    }
+    .page-hero h1 {
+      font-size: clamp(28px, 5vw, 48px); font-weight: 900; margin-bottom: 10px;
+      background: linear-gradient(135deg, #fff, var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .page-hero .updated {
+      color: var(--muted); font-size: 13px; font-weight: 600;
+    }
+
+    /* CONTENT */
+    .privacy-content { padding: 0 0 80px; }
+
+    .priv-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-bd);
+      border-radius: var(--radius);
+      padding: 28px 26px;
+      margin-bottom: 14px;
+    }
+    .priv-section h2 {
+      font-size: 17px; font-weight: 800; margin-bottom: 14px;
+      color: var(--gold);
+      display: flex; align-items: center; gap: 9px;
+    }
+    .priv-section p, .priv-section li {
+      color: var(--muted); font-size: 14px; line-height: 1.75;
+    }
+    .priv-section ul {
+      margin: 10px 0 0 18px;
+    }
+    .priv-section li { margin-bottom: 6px; }
+    .priv-section a { color: var(--gold); text-decoration: none; }
+    .priv-section a:hover { text-decoration: underline; }
+
+    .highlight-box {
+      background: rgba(255,212,106,.08);
+      border: 1px solid rgba(255,212,106,.22);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+    .highlight-box p {
+      color: rgba(255,212,106,.85); font-size: 14px; font-weight: 600; line-height: 1.6;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 32px; display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between; gap: 14px;
+    }
+    .footer-left { display: flex; align-items: center; gap: 10px; }
+    .footer-logo { font-size: 20px; }
+    .footer-brand { font-size: 14px; font-weight: 800; }
+    .footer-copy { font-size: 11px; color: var(--muted); }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a {
+      text-decoration: none; color: var(--muted); font-size: 13px; font-weight: 600;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.1), transparent); }
+
+    @media (max-width: 640px) {
+      nav { padding: 14px 18px; }
+      .priv-section { padding: 20px 18px; }
+      footer { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars"></div>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon">🎮</div>
+    <span>Merge Game</span>
+  </a>
+  <a class="nav-back" href="index.html">← Ana Sayfa</a>
+</nav>
+
+<section class="page-hero">
+  <h1>Gizlilik Politikası</h1>
+  <p class="updated">Son güncelleme: 24 Haziran 2026</p>
+</section>
+
+<div class="container">
+  <div class="highlight-box">
+    <p>🔒 Gizliliğin bizim için önemlidir. Bu politika, Merge Game uygulamasını kullanırken hangi verilerin toplandığını ve nasıl kullanıldığını açıklamaktadır.</p>
+  </div>
+
+  <div class="privacy-content">
+
+    <div class="priv-section">
+      <h2>📋 Genel Bakış</h2>
+      <p>Merge Game ("biz", "uygulama") olarak kullanıcılarımızın gizliliğine saygı duyuyoruz. Bu gizlilik politikası, mobil uygulamamızı kullanırken hangi bilgilerin toplandığını, nasıl kullanıldığını ve korunduğunu açıklar.</p>
+    </div>
+
+    <div class="priv-section">
+      <h2>📊 Topladığımız Veriler</h2>
+      <p>Uygulama aşağıdaki bilgileri toplayabilir:</p>
+      <ul>
+        <li><strong>Cihaz kimliği (Device ID):</strong> Anonim bir tanımlayıcı. Liderlik tablosu ve ilerleme takibi için kullanılır. Kişisel bilgi içermez.</li>
+        <li><strong>Oyun verileri:</strong> Skor, seviye, oyun süresi, birleştirme sayısı gibi oyun içi istatistikler.</li>
+        <li><strong>Kullanıcı adı:</strong> Ayarlardan girdiğin, isteğe bağlı takma ad. Gerçek ismini girmen gerekmez.</li>
+        <li><strong>Avatar tercihleri:</strong> Seçtiğin renk ve avatar görseli.</li>
+        <li><strong>Uygulama kullanım istatistikleri:</strong> Hangi modun oynanıldığı, oturum süresi gibi anonim analitik veriler.</li>
+      </ul>
+    </div>
+
+    <div class="priv-section">
+      <h2>🎯 Reklamlar ve Takip</h2>
+      <p>Uygulama, Google AdMob aracılığıyla reklam göstermektedir. iOS 14.5 ve üzeri sürümlerde uygulama reklamlar için takip izni ister (App Tracking Transparency). Bu izni reddedebilirsin; uygulama çalışmaya devam eder, yalnızca kişiselleştirilmemiş reklamlar gösterilir.</p>
+      <ul>
+        <li>Google'ın veri kullanımı: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></li>
+        <li>AdMob gizlilik politikası: <a href="https://support.google.com/admob/answer/6128543" target="_blank" rel="noopener">AdMob Destek</a></li>
+      </ul>
+    </div>
+
+    <div class="priv-section">
+      <h2>☁️ Bulut ve Veritabanı</h2>
+      <p>Oyun verileri Supabase altyapısı üzerinde güvenli olarak depolanır. Supabase, endüstri standartlarında şifreleme ve güvenlik önlemleri kullanır. Veriler yalnızca oyun özelliklerini çalıştırmak için kullanılır, üçüncü taraflarla satılmaz veya paylaşılmaz.</p>
+    </div>
+
+    <div class="priv-section">
+      <h2>🔐 Veri Güvenliği</h2>
+      <p>Verilerini korumak için aşağıdaki önlemleri alıyoruz:</p>
+      <ul>
+        <li>Tüm ağ iletişimi HTTPS/TLS ile şifrelenir.</li>
+        <li>Kişisel bilgi (ad, e-posta, telefon) toplamıyoruz.</li>
+        <li>Cihaz kimliği anonim bir hash değeridir; gerçek kişiyle ilişkilendirilemez.</li>
+        <li>Veriler üçüncü taraflarla pazarlama amaçlı paylaşılmaz.</li>
+      </ul>
+    </div>
+
+    <div class="priv-section">
+      <h2>👶 Çocukların Gizliliği</h2>
+      <p>Merge Game 4+ yaş derecelendirmesine sahiptir. Bilerek 13 yaşın altındaki çocuklardan kişisel veri toplamıyoruz. Eğer böyle bir durum fark edersek söz konusu verileri derhal sileriz.</p>
+    </div>
+
+    <div class="priv-section">
+      <h2>🗑️ Verilerini Silme Talebi</h2>
+      <p>Oyun verilerinin (skor, kullanıcı adı, ilerleme) silinmesini talep etmek için aşağıdaki adrese e-posta gönder. Talebini aldıktan sonra 30 gün içinde işleme koyarız.</p>
+      <p style="margin-top:12px;">📧 <a href="mailto:cenkerenozbek@gmail.com">cenkerenozbek@gmail.com</a></p>
+    </div>
+
+    <div class="priv-section">
+      <h2>🔄 Politika Değişiklikleri</h2>
+      <p>Bu gizlilik politikasını zaman zaman güncelleyebiliriz. Önemli değişikliklerde uygulama içinde bildirim gönderilebilir. Güncel politikayı her zaman bu sayfada bulabilirsin.</p>
+    </div>
+
+    <div class="priv-section">
+      <h2>📬 İletişim</h2>
+      <p>Gizlilik politikasıyla ilgili sorularını veya endişelerini aşağıdaki adrese iletebilirsin:</p>
+      <ul>
+        <li>E-posta: <a href="mailto:cenkerenozbek@gmail.com">cenkerenozbek@gmail.com</a></li>
+        <li>Destek sayfası: <a href="support.html">support.html</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<footer>
+  <div class="footer-left">
+    <span class="footer-logo">🎮</span>
+    <div>
+      <div class="footer-brand">Merge Game</div>
+      <div class="footer-copy">© 2026 Merge Game. Tüm hakları saklıdır.</div>
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="index.html">Ana Sayfa</a>
+    <a href="support.html">Destek</a>
+    <a href="mailto:cenkerenozbek@gmail.com">İletişim</a>
+  </div>
+</footer>
+
+</body>
+</html>
